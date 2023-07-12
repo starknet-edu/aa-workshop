@@ -6,21 +6,8 @@ use array::{
 use array::SpanTrait;
 use option::OptionTrait;
 use serde::Serde;
-
-
-impl SpanSerde<
-    T, impl TSerde: Serde<T>, impl TCopy: Copy<T>, impl TDrop: Drop<T>
-> of Serde<Span<T>> {
-    fn serialize(self: @Span<T>, ref output: Array<felt252>) {
-        (*self).len().serialize(ref output);
-        serialize_array_helper(*self, ref output);
-    }
-    fn deserialize(ref serialized: Span<felt252>) -> Option<Span<T>> {
-        let length = *serialized.pop_front()?;
-        let mut arr = ArrayTrait::new();
-        Option::Some(deserialize_array_helper(ref serialized, arr, length)?.span())
-    }
-}
+use starknet::account::Call;
+use snrc::ISRC6;
 
 #[starknet::contract]
 mod Account {
@@ -51,22 +38,16 @@ mod Account {
     }
 
     #[external(v0)]
-    impl AccountImpl of AccountContract<ContractState> {
-
-        fn __validate_declare__(self: @ContractState, class_hash: felt252) -> felt252 {
-            self.validate_transaction()
-        }
+    impl ISRC6Impl of super::ISRC6<ContractState> {
 
         fn __validate__(
             ref self: ContractState,
-            contract_address: ContractAddress,
-            entry_point_selector: felt252,
-            calldata: Array<felt252>
+            calls: Array<Call>
         ) -> felt252 {
             self.validate_transaction()
         }
 
-        fn __execute__(ref self: ContractState, calls: Array<Call>) -> Span<felt252> {
+        fn __execute__(ref self: ContractState, calls: Array<Call>) -> Array<Span<felt252>> {
             // Avoid calls from other contracts
             // https://github.com/OpenZeppelin/cairo-contracts/issues/344
             let sender = get_caller_address();
@@ -81,6 +62,11 @@ mod Account {
 
             self._execute_calls(calls)
         }
+
+        fn is_valid_signature(self: @ContractState, hash: felt252, signature: Array<felt252>) -> felt252 {
+            let is_valid = self._is_valid_signature(hash, signature.span());
+            if is_valid == true { starknet::VALIDATED } else { 0 }
+        }
     }
 
     #[generate_trait]
@@ -93,12 +79,12 @@ mod Account {
             starknet::VALIDATED
         }
 
-        fn _is_valid_signature(self: @ContractState, message: felt252, signature: Span<felt252>) -> bool {
+        fn _is_valid_signature(self: @ContractState, hash: felt252, signature: Span<felt252>) -> bool {
             let valid_length = signature.len() == 2_u32;
 
             if valid_length {
                 check_ecdsa_signature(
-                    message, self.public_key.read(), *signature.at(0_u32), *signature.at(1_u32)
+                    hash, self.public_key.read(), *signature.at(0_u32), *signature.at(1_u32)
                 )
             } else {
                 false
