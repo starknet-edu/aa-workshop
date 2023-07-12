@@ -1,3 +1,7 @@
+use array::ArrayTrait;
+use array::SpanTrait;
+use starknet::account::Call;
+
 /// @title SRC-6 Standard Account
 trait ISRC6<T> {
     /// @notice Execute a transaction through the account

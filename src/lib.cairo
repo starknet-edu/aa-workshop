@@ -1,21 +1,10 @@
-use array::{
-    ArrayTrait,
-    serialize_array_helper,
-    deserialize_array_helper,
-};
-use array::SpanTrait;
-use option::OptionTrait;
-use serde::Serde;
-use starknet::account::Call;
 use snrc::ISRC6;
 
 #[starknet::contract]
 mod Account {
 
-    use super::ArrayTrait;
-    use super::SpanTrait;
-    use starknet::account::Call;
-    use starknet::account::AccountContract;
+    use array::{ArrayTrait, SpanTrait};
+    use starknet::account::{Call, AccountContract};
     use starknet::ContractAddress;
     use starknet::get_tx_info;
     use ecdsa::check_ecdsa_signature;
