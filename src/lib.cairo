@@ -1,4 +1,4 @@
-use snrc::{ISRC5, ISRC6};
+use snips::{ISRC5, ISRC6};
 
 #[starknet::contract]
 mod Account {
