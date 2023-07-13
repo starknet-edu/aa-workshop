@@ -69,6 +69,15 @@ mod Account {
     #[external(v0)]
     #[generate_trait]
     impl AddOnImpl of AddOnTrait {
+    
+        fn __validate_declare__(self: @ContractState, class_hash: felt252) -> felt252 {
+            self.validate_transaction()
+        }
+
+        fn __validate_deploy__(self: @ContractState, class_hash: felt252, salt: felt252, public_key: felt252) -> felt252 {
+            self.validate_transaction()
+        }
+
         fn get_public_key(self: @ContractState) -> felt252 {
             self.public_key.read()
         }
