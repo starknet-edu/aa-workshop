@@ -20,3 +20,11 @@ trait ISRC6<T> {
     /// @return The string 'VALID' represented as felt when the signature is valid
     fn is_valid_signature(self: @T, hash: felt252, signature: Array<felt252>) -> felt252;
 }
+
+/// @title SRC-5 Standard Interface Detection
+trait ISRC5<T> {
+    /// @notice Query if a contract implements an interface
+    /// @param interface_id The interface identifier, as specified in SRC-5
+    /// @return `true` if the contract implements `interface_id`, `false` otherwise
+    fn supports_interface(self: @T, interface_id: felt252) -> bool;
+}

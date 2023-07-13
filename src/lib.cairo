@@ -1,4 +1,4 @@
-use snrc::ISRC6;
+use snrc::{ISRC5, ISRC6};
 
 #[starknet::contract]
 mod Account {
@@ -58,8 +58,25 @@ mod Account {
         }
     }
 
+    #[external(v0)]
+    impl ISRC5Impl of super::ISRC5<ContractState> {
+        fn supports_interface(self: @ContractState, interface_id: felt252) -> bool {
+            let src6_trait_id = 0x2ceccef7f994940b3962a6c67e0ba4fcd37df7d131417c604f91e03caecc1cd;
+            if interface_id == src6_trait_id { true } else { false }
+        }
+    }
+
+    #[external(v0)]
+    #[generate_trait]
+    impl AddOnImpl of AddOnTrait {
+        fn get_public_key(self: @ContractState) -> felt252 {
+            self.public_key.read()
+        }
+    }
+
     #[generate_trait]
     impl PrivateImpl of PrivateTrat {
+
         fn validate_transaction(self: @ContractState) -> felt252 {
             let tx_info = get_tx_info().unbox();
             let tx_hash = tx_info.transaction_hash;
