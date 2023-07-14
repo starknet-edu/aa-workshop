@@ -84,7 +84,7 @@ mod Account {
     }
 
     #[generate_trait]
-    impl PrivateImpl of PrivateTrat {
+    impl PrivateImpl of PrivateTrait {
 
         fn validate_transaction(self: @ContractState) -> felt252 {
             let tx_info = get_tx_info().unbox();
