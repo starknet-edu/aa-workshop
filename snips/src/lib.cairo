@@ -1,5 +1,4 @@
-use array::ArrayTrait;
-use array::SpanTrait;
+use array::{ArrayTrait, SpanTrait};
 use starknet::account::Call;
 
 /// @title SRC-6 Standard Account
@@ -12,7 +11,7 @@ trait ISRC6<T> {
     /// @notice Assert whether the transaction is valid to be executed
     /// @param calls The list of calls to execute
     /// @return The string 'VALID' represented as felt when is valid
-    fn __validate__(ref self: T, calls: Array<Call>) -> felt252;
+    fn __validate__(self: @T, calls: Array<Call>) -> felt252;
 
     /// @notice Assert whether a given signature for a given hash is valid
     /// @param hash The hash of the data

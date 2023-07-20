@@ -4,17 +4,17 @@ use snips::{ISRC5, ISRC6};
 mod Account {
 
     use array::{ArrayTrait, SpanTrait};
+    use box::BoxTrait;
+    use ecdsa::check_ecdsa_signature;
+    use zeroable::Zeroable;
     use starknet::account::{Call, AccountContract};
     use starknet::ContractAddress;
-    use starknet::get_tx_info;
-    use ecdsa::check_ecdsa_signature;
-    use box::BoxTrait;
-    use starknet::get_caller_address;
-    use zeroable::Zeroable;
+    use starknet::{get_tx_info, get_caller_address};
 
-    const TRANSACTION_VERSION: felt252 = 1;
-    // 2**128 + TRANSACTION_VERSION
-    const QUERY_VERSION: felt252 = 340282366920938463463374607431768211457;
+    const SUPPORTED_INVOKE_TX_VERSION: felt252 = 1;
+    const SUPPORTED_DECLARE_TX_VERSION: felt252 = 2;
+    const SUPPORTED_DEPLOY_ACCOUNT_TX_VERSION: felt252 = 2;
+    const SIMULATE_TX_VERSION_OFFSET: felt252 = 340282366920938463463374607431768211456; // 2**128
 
     #[storage]
     struct Storage {
@@ -29,26 +29,15 @@ mod Account {
     #[external(v0)]
     impl ISRC6Impl of super::ISRC6<ContractState> {
 
-        fn __validate__(
-            ref self: ContractState,
-            calls: Array<Call>
-        ) -> felt252 {
-            self.validate_transaction()
+        fn __validate__(self: @ContractState, calls: Array<Call>) -> felt252 {
+            self._only_protocol();
+            self._only_supported_tx_version(SUPPORTED_INVOKE_TX_VERSION);
+            self._validate_transaction()
         }
 
         fn __execute__(ref self: ContractState, calls: Array<Call>) -> Array<Span<felt252>> {
-            // Avoid calls from other contracts
-            // https://github.com/OpenZeppelin/cairo-contracts/issues/344
-            let sender = get_caller_address();
-            assert(sender.is_zero(), 'Account: invalid caller');
-
-            // Check tx version
-            let tx_info = get_tx_info().unbox();
-            let version = tx_info.version;
-            if version != TRANSACTION_VERSION {
-                assert(version == QUERY_VERSION, 'Account: invalid tx version');
-            }
-
+            self._only_protocol();
+            self._only_supported_tx_version(SUPPORTED_INVOKE_TX_VERSION);
             self._execute_calls(calls)
         }
 
@@ -71,11 +60,15 @@ mod Account {
     impl AddOnImpl of AddOnTrait {
     
         fn __validate_declare__(self: @ContractState, class_hash: felt252) -> felt252 {
-            self.validate_transaction()
+            self._only_protocol();
+            self._only_supported_tx_version(SUPPORTED_DECLARE_TX_VERSION);
+            self._validate_transaction()
         }
 
         fn __validate_deploy__(self: @ContractState, class_hash: felt252, salt: felt252, public_key: felt252) -> felt252 {
-            self.validate_transaction()
+            self._only_protocol();
+            self._only_supported_tx_version(SUPPORTED_DEPLOY_ACCOUNT_TX_VERSION);
+            self._validate_transaction()
         }
 
         fn get_public_key(self: @ContractState) -> felt252 {
@@ -86,24 +79,25 @@ mod Account {
     #[generate_trait]
     impl PrivateImpl of PrivateTrait {
 
-        fn validate_transaction(self: @ContractState) -> felt252 {
+        fn _validate_transaction(self: @ContractState) -> felt252 {
             let tx_info = get_tx_info().unbox();
             let tx_hash = tx_info.transaction_hash;
             let signature = tx_info.signature;
+            
             assert(self._is_valid_signature(tx_hash, signature), 'Account: invalid signature');
             starknet::VALIDATED
         }
 
         fn _is_valid_signature(self: @ContractState, hash: felt252, signature: Span<felt252>) -> bool {
-            let valid_length = signature.len() == 2_u32;
+            let is_valid_length = signature.len() == 2_u32;
 
-            if valid_length {
-                check_ecdsa_signature(
-                    hash, self.public_key.read(), *signature.at(0_u32), *signature.at(1_u32)
-                )
-            } else {
-                false
+            if !is_valid_length {
+                return false;
             }
+            
+            check_ecdsa_signature(
+                hash, self.public_key.read(), *signature.at(0_u32), *signature.at(1_u32)
+            )
         }
 
         fn _execute_calls(self: @ContractState, mut calls: Array<Call>) -> Array<Span<felt252>> {
@@ -125,6 +119,21 @@ mod Account {
         fn _execute_single_call(self: @ContractState, call: Call) -> Span<felt252> {
             let Call{to, selector, calldata } = call;
             starknet::call_contract_syscall(to, selector, calldata.span()).unwrap_syscall()
+        }
+
+        fn _only_supported_tx_version(self: @ContractState, supported_tx_version: felt252) {
+            let tx_info = get_tx_info().unbox();
+            let version = tx_info.version;
+            assert(
+                version == supported_tx_version ||
+                version == SIMULATE_TX_VERSION_OFFSET + supported_tx_version,
+                'Account: Unsupported tx version'
+            );
+        }
+
+        fn _only_protocol(self: @ContractState) {
+            let sender = get_caller_address();
+            assert(sender.is_zero(), 'Account: invalid caller');
         }
     }
 }
