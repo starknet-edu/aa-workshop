@@ -1,13 +1,24 @@
-use snips::{ISRC5, ISRC6};
+use array::{ArrayTrait, SpanTrait};
+use starknet::account::Call;
+
+trait IAccount<T> {
+    fn __execute__(ref self: T, calls: Array<Call>) -> Array<Span<felt252>>;
+    fn __validate__(self: @T, calls: Array<Call>) -> felt252;
+    fn __validate_declare__(self: @T, class_hash: felt252) -> felt252;
+    fn __validate_deploy__(self: @T, class_hash: felt252, salt: felt252, public_key: felt252) -> felt252;
+    fn is_valid_signature(self: @T, hash: felt252, signature: Array<felt252>) -> felt252;
+    fn supports_interface(self: @T, interface_id: felt252) -> bool;
+    fn get_public_key(self: @T) -> felt252;
+}
 
 #[starknet::contract]
 mod Account {
 
-    use array::{ArrayTrait, SpanTrait};
+    use super::{ArrayTrait, SpanTrait, Call, IAccount};
     use box::BoxTrait;
     use ecdsa::check_ecdsa_signature;
     use zeroable::Zeroable;
-    use starknet::account::{Call, AccountContract};
+    use starknet::account::AccountContract;
     use starknet::ContractAddress;
     use starknet::{get_tx_info, get_caller_address};
 
@@ -27,13 +38,7 @@ mod Account {
     }
 
     #[external(v0)]
-    impl ISRC6Impl of super::ISRC6<ContractState> {
-
-        fn __validate__(self: @ContractState, calls: Array<Call>) -> felt252 {
-            self._only_protocol();
-            self._only_supported_tx_version(SUPPORTED_INVOKE_TX_VERSION);
-            self._validate_transaction()
-        }
+    impl PublicMethods of IAccount<ContractState> {
 
         fn __execute__(ref self: ContractState, calls: Array<Call>) -> Array<Span<felt252>> {
             self._only_protocol();
@@ -41,24 +46,12 @@ mod Account {
             self._execute_calls(calls)
         }
 
-        fn is_valid_signature(self: @ContractState, hash: felt252, signature: Array<felt252>) -> felt252 {
-            let is_valid = self._is_valid_signature(hash, signature.span());
-            if is_valid == true { starknet::VALIDATED } else { 0 }
+        fn __validate__(self: @ContractState, calls: Array<Call>) -> felt252 {
+            self._only_protocol();
+            self._only_supported_tx_version(SUPPORTED_INVOKE_TX_VERSION);
+            self._validate_transaction()
         }
-    }
 
-    #[external(v0)]
-    impl ISRC5Impl of super::ISRC5<ContractState> {
-        fn supports_interface(self: @ContractState, interface_id: felt252) -> bool {
-            let src6_trait_id = 0x2ceccef7f994940b3962a6c67e0ba4fcd37df7d131417c604f91e03caecc1cd;
-            if interface_id == src6_trait_id { true } else { false }
-        }
-    }
-
-    #[external(v0)]
-    #[generate_trait]
-    impl AddOnImpl of AddOnTrait {
-    
         fn __validate_declare__(self: @ContractState, class_hash: felt252) -> felt252 {
             self._only_protocol();
             self._only_supported_tx_version(SUPPORTED_DECLARE_TX_VERSION);
@@ -71,13 +64,23 @@ mod Account {
             self._validate_transaction()
         }
 
+        fn is_valid_signature(self: @ContractState, hash: felt252, signature: Array<felt252>) -> felt252 {
+            let is_valid = self._is_valid_signature(hash, signature.span());
+            if is_valid == true { starknet::VALIDATED } else { 0 }
+        }
+
+        fn supports_interface(self: @ContractState, interface_id: felt252) -> bool {
+            let src6_trait_id = 0x2ceccef7f994940b3962a6c67e0ba4fcd37df7d131417c604f91e03caecc1cd;
+            if interface_id == src6_trait_id { true } else { false }
+        }
+
         fn get_public_key(self: @ContractState) -> felt252 {
             self.public_key.read()
         }
     }
 
     #[generate_trait]
-    impl PrivateImpl of PrivateTrait {
+    impl PrivateMEthods of PrivateTrait {
 
         fn _validate_transaction(self: @ContractState) -> felt252 {
             let tx_info = get_tx_info().unbox();

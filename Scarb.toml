@@ -4,7 +4,6 @@ version = "0.1.0"
 
 [dependencies]
 starknet = ">=2.0.1"
-snips = { path = "snips" }
 
 [cairo]
 sierra-replace-ids = true
