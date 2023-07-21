@@ -71,7 +71,7 @@ mod Account {
 
         fn supports_interface(self: @ContractState, interface_id: felt252) -> bool {
             let src6_trait_id = 0x2ceccef7f994940b3962a6c67e0ba4fcd37df7d131417c604f91e03caecc1cd;
-            if interface_id == src6_trait_id { true } else { false }
+            interface_id == src6_trait_id
         }
 
         fn get_public_key(self: @ContractState) -> felt252 {
@@ -140,4 +140,3 @@ mod Account {
         }
     }
 }
-
