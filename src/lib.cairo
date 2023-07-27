@@ -27,6 +27,8 @@ mod Account {
     const SUPPORTED_DEPLOY_ACCOUNT_TX_VERSION: felt252 = 2;
     const SIMULATE_TX_VERSION_OFFSET: felt252 = 340282366920938463463374607431768211456; // 2**128
 
+    const SRC6_TRAIT_ID: felt252 = 0x2ceccef7f994940b3962a6c67e0ba4fcd37df7d131417c604f91e03caecc1cd;
+
     #[storage]
     struct Storage {
         public_key: felt252
@@ -70,8 +72,7 @@ mod Account {
         }
 
         fn supports_interface(self: @ContractState, interface_id: felt252) -> bool {
-            let src6_trait_id = 0x2ceccef7f994940b3962a6c67e0ba4fcd37df7d131417c604f91e03caecc1cd;
-            interface_id == src6_trait_id
+            interface_id == SRC6_TRAIT_ID
         }
 
         fn get_public_key(self: @ContractState) -> felt252 {
@@ -80,7 +81,7 @@ mod Account {
     }
 
     #[generate_trait]
-    impl PrivateMEthods of PrivateTrait {
+    impl PrivateMethods of PrivateTrait {
 
         fn _validate_transaction(self: @ContractState) -> felt252 {
             let tx_info = get_tx_info().unbox();
