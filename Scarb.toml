@@ -5,8 +5,4 @@ version = "0.1.0"
 [dependencies]
 starknet = "2.0.1"
 
-[cairo]
-sierra-replace-ids = true
-
 [[target.starknet-contract]]
-sierra = true
