@@ -11,6 +11,12 @@ trait IAccount<T> {
     fn get_public_key(self: @T) -> felt252;
 }
 
+mod SUPPORTED_TX_VERSION {
+    const DEPLOY_ACCOUNT: felt252 = 1;
+    const DECLARE: felt252 = 2;
+    const INVOKE: felt252 = 1;
+}
+
 #[starknet::contract]
 mod Account {
 
@@ -21,12 +27,10 @@ mod Account {
     use starknet::account::AccountContract;
     use starknet::ContractAddress;
     use starknet::{get_tx_info, get_caller_address};
+    use super::SUPPORTED_TX_VERSION;
 
-    const SUPPORTED_INVOKE_TX_VERSION: felt252 = 1;
-    const SUPPORTED_DECLARE_TX_VERSION: felt252 = 2;
-    const SUPPORTED_DEPLOY_ACCOUNT_TX_VERSION: felt252 = 1;
     const SIMULATE_TX_VERSION_OFFSET: felt252 = 340282366920938463463374607431768211456; // 2**128
-
+    
     // hex: 0x2ceccef7f994940b3962a6c67e0ba4fcd37df7d131417c604f91e03caecc1cd
     const SRC6_TRAIT_ID: felt252 = 1270010605630597976495846281167968799381097569185364931397797212080166453709;
 
@@ -44,31 +48,31 @@ mod Account {
     impl PublicMethods of IAccount<ContractState> {
 
         fn __execute__(ref self: ContractState, calls: Array<Call>) -> Array<Span<felt252>> {
-            self._only_protocol();
-            self._only_supported_tx_version(SUPPORTED_INVOKE_TX_VERSION);
-            self._execute_calls(calls)
+            self.only_protocol();
+            self.only_supported_tx_version(SUPPORTED_TX_VERSION::INVOKE);
+            self.execute_multiple_calls(calls)
         }
 
         fn __validate__(self: @ContractState, calls: Array<Call>) -> felt252 {
-            self._only_protocol();
-            self._only_supported_tx_version(SUPPORTED_INVOKE_TX_VERSION);
-            self._validate_transaction()
+            self.only_protocol();
+            self.only_supported_tx_version(SUPPORTED_TX_VERSION::INVOKE);
+            self.validate_transaction()
         }
 
         fn __validate_declare__(self: @ContractState, class_hash: felt252) -> felt252 {
-            self._only_protocol();
-            self._only_supported_tx_version(SUPPORTED_DECLARE_TX_VERSION);
-            self._validate_transaction()
+            self.only_protocol();
+            self.only_supported_tx_version(SUPPORTED_TX_VERSION::DECLARE);
+            self.validate_transaction()
         }
 
         fn __validate_deploy__(self: @ContractState, class_hash: felt252, salt: felt252, public_key: felt252) -> felt252 {
-            self._only_protocol();
-            self._only_supported_tx_version(SUPPORTED_DEPLOY_ACCOUNT_TX_VERSION);
-            self._validate_transaction()
+            self.only_protocol();
+            self.only_supported_tx_version(SUPPORTED_TX_VERSION::DEPLOY_ACCOUNT);
+            self.validate_transaction()
         }
 
         fn is_valid_signature(self: @ContractState, hash: felt252, signature: Array<felt252>) -> felt252 {
-            let is_valid = self._is_valid_signature(hash, signature.span());
+            let is_valid = self.is_valid_signature_bool(hash, signature.span());
             if is_valid == true { starknet::VALIDATED } else { 0 }
         }
 
@@ -84,16 +88,16 @@ mod Account {
     #[generate_trait]
     impl PrivateMethods of PrivateTrait {
 
-        fn _validate_transaction(self: @ContractState) -> felt252 {
+        fn validate_transaction(self: @ContractState) -> felt252 {
             let tx_info = get_tx_info().unbox();
             let tx_hash = tx_info.transaction_hash;
             let signature = tx_info.signature;
             
-            assert(self._is_valid_signature(tx_hash, signature), 'Account: invalid signature');
+            assert(self.is_valid_signature_bool(tx_hash, signature), 'Account: invalid signature');
             starknet::VALIDATED
         }
 
-        fn _is_valid_signature(self: @ContractState, hash: felt252, signature: Span<felt252>) -> bool {
+        fn is_valid_signature_bool(self: @ContractState, hash: felt252, signature: Span<felt252>) -> bool {
             let is_valid_length = signature.len() == 2_u32;
 
             if !is_valid_length {
@@ -105,12 +109,12 @@ mod Account {
             )
         }
 
-        fn _execute_calls(self: @ContractState, mut calls: Array<Call>) -> Array<Span<felt252>> {
+        fn execute_multiple_calls(self: @ContractState, mut calls: Array<Call>) -> Array<Span<felt252>> {
             let mut res = ArrayTrait::new();
             loop {
                 match calls.pop_front() {
                     Option::Some(call) => {
-                        let _res = self._execute_single_call(call);
+                        let _res = self.execute_single_call(call);
                         res.append(_res);
                     },
                     Option::None(_) => {
@@ -121,12 +125,12 @@ mod Account {
             res
         }
 
-        fn _execute_single_call(self: @ContractState, call: Call) -> Span<felt252> {
+        fn execute_single_call(self: @ContractState, call: Call) -> Span<felt252> {
             let Call{to, selector, calldata } = call;
             starknet::call_contract_syscall(to, selector, calldata.span()).unwrap_syscall()
         }
 
-        fn _only_supported_tx_version(self: @ContractState, supported_tx_version: felt252) {
+        fn only_supported_tx_version(self: @ContractState, supported_tx_version: felt252) {
             let tx_info = get_tx_info().unbox();
             let version = tx_info.version;
             assert(
@@ -136,7 +140,7 @@ mod Account {
             );
         }
 
-        fn _only_protocol(self: @ContractState) {
+        fn only_protocol(self: @ContractState) {
             let sender = get_caller_address();
             assert(sender.is_zero(), 'Account: invalid caller');
         }
