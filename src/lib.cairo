@@ -99,7 +99,8 @@ mod Account {
       let signature = tx_info.signature;
       
       let is_valid = self.is_valid_signature_bool(tx_hash, signature);
-      if is_valid { VALIDATED } else { 0 }
+      assert(is_valid, 'Account: Incorrect tx signature');
+      VALIDATED
     }
 
     fn execute_single_call(self: @ContractState, call: Call) -> Span<felt252> {
