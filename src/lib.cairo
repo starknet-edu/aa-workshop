@@ -10,6 +10,7 @@ mod SUPPORTED_TX_VERSION {
 trait IAccount<T> {
   fn is_valid_signature(self: @T, hash: felt252, signature: Array<felt252>) -> felt252;
   fn supports_interface(self: @T, interface_id: felt252) -> bool;
+  fn public_key(self: @T) -> felt252;
 }
 
 #[starknet::contract]
@@ -43,6 +44,10 @@ mod Account {
 
     fn supports_interface(self: @ContractState, interface_id: felt252) -> bool {
       interface_id == SRC6_TRAIT_ID
+    }
+
+    fn public_key(self: @ContractState) -> felt252 {
+      self.public_key.read()
     }
   }
 
