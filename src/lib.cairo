@@ -105,7 +105,7 @@ mod Account {
 
     fn execute_single_call(self: @ContractState, call: Call) -> Span<felt252> {
       let Call{to, selector, calldata} = call;
-      call_contract_syscall(to, selector, calldata.span()).unwrap_syscall()
+      call_contract_syscall(to, selector, calldata.span()).unwrap()
     }
 
     fn execute_multiple_calls(self: @ContractState, mut calls: Array<Call>) -> Array<Span<felt252>> {
