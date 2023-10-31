@@ -6,7 +6,7 @@ mod SUPPORTED_TX_VERSION {
   const INVOKE: felt252 = 1;
 }
 
-#[starnet::interface]
+#[starknet::interface]
 trait IAccount<T> {
   fn is_valid_signature(self: @T, hash: felt252, signature: Array<felt252>) -> felt252;
   fn supports_interface(self: @T, interface_id: felt252) -> bool;
