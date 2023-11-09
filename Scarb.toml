@@ -1,11 +1,22 @@
 [package]
 name = "aa"
 version = "0.1.0"
-cairo-version = "2.3.0"
+cairo-version = "2.3.1"
 
 [dependencies]
-starknet = ">=2.3.0"
+starknet = ">=2.3.1"
+snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry.git", tag = "v0.10.0" }
 
 [[target.starknet-contract]]
 sierra = true
 casm = true
+
+[scripts]
+test = "snforge test"
+verify_step1 = "snforge test tests::step1"
+verify_step2 = "snforge test tests::step2"
+verify_step3 = "snforge test tests::step3"
+verify_step4 = "snforge test tests::step4"
+verify_step5 = "snforge test tests::step5"
+verify_step7 = "snforge test tests::step7"
+verify_step8 = "snforge test tests::step8"
