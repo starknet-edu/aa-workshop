@@ -137,5 +137,5 @@ mod Account {
                 'Account: Unsupported tx version'
             );
         }
-  }
+    }
 }
