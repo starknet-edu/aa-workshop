@@ -10,14 +10,3 @@ snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry.git", tag 
 [[target.starknet-contract]]
 sierra = true
 casm = true
-
-[scripts]
-test = "snforge test"
-verify_step1 = "snforge test tests::step1"
-verify_step2 = "snforge test tests::step2"
-verify_step3 = "snforge test tests::step3"
-verify_step4 = "snforge test tests::step4"
-verify_step5 = "snforge test tests::step5"
-verify_step6 = "snforge test tests::step6"
-verify_step7 = "snforge test tests::step7"
-verify_step8 = "snforge test tests::step8"
