@@ -22,9 +22,7 @@ mod Account {
     use super::{Call, IAccount, SUPPORTED_TX_VERSION};
     use starknet::{get_caller_address, call_contract_syscall, get_tx_info, VALIDATED};
     use zeroable::Zeroable;
-    use array::{ArrayTrait, SpanTrait};
     use ecdsa::check_ecdsa_signature;
-    use box::BoxTrait;
 
     const SIMULATE_TX_VERSION_OFFSET: felt252 = 340282366920938463463374607431768211456; // 2**128
     const SRC6_TRAIT_ID: felt252 = 1270010605630597976495846281167968799381097569185364931397797212080166453709; // hash of SNIP-6 trait
