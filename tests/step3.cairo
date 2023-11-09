@@ -2,7 +2,7 @@ use core::option::OptionTrait;
 use starknet::ContractAddress;
 use snforge_std::signature::StarkCurveKeyPairTrait;
 use snforge_std::{ start_spoof, stop_spoof, start_prank, stop_prank };
-use aa::{ IAccountDispatcher, IAccountDispatcherTrait };
+use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait };
 use super::utils::{deploy_contract, create_call_array_mock, create_tx_info_mock };
 
 #[test]

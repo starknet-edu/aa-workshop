@@ -1,5 +1,5 @@
 use starknet::{ ContractAddress, account::Call };
-use aa::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
+use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
 use snforge_std::signature::StarkCurveKeyPairTrait;
 use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof };
 use super::utils::{ deploy_contract, create_tx_info_mock };
