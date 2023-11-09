@@ -1,6 +1,6 @@
 use core::array::ArrayTrait;
 use starknet::{ ContractAddress, account::Call };
-use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
+use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait };
 use snforge_std::{
     start_prank,
     stop_prank,
@@ -30,7 +30,7 @@ fn handles_a_single_call() {
     let ret_data_mock = 421;
 
     let mut tx_info_mock = TxInfoMockTrait::default();
-    tx_info_mock.version = Option::Some(SUPPORTED_TX_VERSION::INVOKE);
+    tx_info_mock.version = Option::Some(1);
     
     start_prank(contract_address, zero_address);
     start_spoof(contract_address, tx_info_mock);
@@ -71,7 +71,7 @@ fn handles_multiple_calls() {
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
     let mut tx_info_mock = TxInfoMockTrait::default();
-    tx_info_mock.version = Option::Some(SUPPORTED_TX_VERSION::INVOKE);
+    tx_info_mock.version = Option::Some(1);
     
     start_prank(contract_address, zero_address);
     start_spoof(contract_address, tx_info_mock);
