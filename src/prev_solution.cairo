@@ -14,9 +14,7 @@ trait IAccount<T> {
 mod Account {
     use super::{Call, IAccount};
     use starknet::{get_caller_address, call_contract_syscall, get_tx_info, VALIDATED};
-    use zeroable::Zeroable;
     use ecdsa::check_ecdsa_signature;
-    use box::BoxTrait;
 
     #[storage]
     struct Storage {
