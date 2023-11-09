@@ -55,7 +55,7 @@ mod Account {
         }
 
         fn __execute__(self: @ContractState, calls: Array<Call>) -> Array<Span<felt252>> {
-            assert(!calls.is_empty(), 'Account: No call data given')
+            assert(!calls.is_empty(), 'Account: No call data given');
             self.only_protocol();
             self.only_supported_tx_version(SUPPORTED_TX_VERSION::INVOKE);
             self.execute_multiple_calls(calls)
