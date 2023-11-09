@@ -43,6 +43,7 @@ async function main() {
             console.log(chalk.yellow('Contract class already declared'));
         } else {
             console.log(chalk.red('Declare transaction failed'));
+            console.log(error);
             process.exit(1);
         }
     }
@@ -54,7 +55,8 @@ async function main() {
     try {
         console.log('Deploying account contract...');
         address = await deployAccount({ privateKey, publicKey, classHash, provider });
-        console.log(chalk.green(`Account contract successfully deployed`));
+        console.log(chalk.green(`Account contract successfully deployed to Starknet testnet`));
+        console.log(chalk.green(`Contract address: ${address}`));
     } catch(error: any) {
         if(error instanceof LibraryError && error.message.includes('balance is smaller')) {
             console.log(chalk.red('Insufficient account balance for deployment'));

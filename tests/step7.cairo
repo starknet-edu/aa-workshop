@@ -1,4 +1,4 @@
-use aa::{ IAccountDispatcher, IAccountDispatcherTrait };
+use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait };
 
 use super::utils::deploy_contract;
 

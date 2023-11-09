@@ -1,6 +1,6 @@
 use core::option::OptionTrait;
 use snforge_std::signature::{ interface::Signer, StarkCurveKeyPairTrait };
-use aa::{ IAccountDispatcher, IAccountDispatcherTrait };
+use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait };
 use starknet::VALIDATED;
 
 use super::utils::deploy_contract;
