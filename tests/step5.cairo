@@ -1,5 +1,5 @@
 use starknet::{ ContractAddress, account::Call };
-use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
+use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait };
 use snforge_std::signature::StarkCurveKeyPairTrait;
 use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof };
 use super::utils::{ deploy_contract, create_tx_info_mock };
@@ -11,7 +11,7 @@ fn validate_declare_by_protocol_succeeds() {
     let dispatcher = IAccountDispatcher{ contract_address };
 
     let tx_hash_mock = 123;
-    let tx_version_mock = SUPPORTED_TX_VERSION::DECLARE;
+    let tx_version_mock = 1;
     let tx_info_mock = create_tx_info_mock(tx_hash_mock, ref signer, tx_version_mock);
 
     let class_hash_mock = 999;
@@ -32,7 +32,7 @@ fn validate_declare_by_non_protocol_fails() {
     let dispatcher = IAccountDispatcher{ contract_address };
 
     let tx_hash_mock = 123;
-    let tx_version_mock = SUPPORTED_TX_VERSION::DECLARE;
+    let tx_version_mock = 1;
     let tx_info_mock = create_tx_info_mock(tx_hash_mock, ref signer, tx_version_mock);
 
     let class_hash_mock = 999;
@@ -52,7 +52,7 @@ fn validate_deploy_by_protocol_succeeds() {
     let dispatcher = IAccountDispatcher{ contract_address };
 
     let tx_hash_mock = 123;
-    let tx_version_mock = SUPPORTED_TX_VERSION::DEPLOY_ACCOUNT;
+    let tx_version_mock = 1;
     let tx_info_mock = create_tx_info_mock(tx_hash_mock, ref signer, tx_version_mock);
 
     let class_hash_mock = 999;
@@ -74,7 +74,7 @@ fn validate_deploy_by_non_protocol_fails() {
     let dispatcher = IAccountDispatcher{ contract_address };
 
     let tx_hash_mock = 123;
-    let tx_version_mock = SUPPORTED_TX_VERSION::DEPLOY_ACCOUNT;
+    let tx_version_mock = 1;
     let tx_info_mock = create_tx_info_mock(tx_hash_mock, ref signer, tx_version_mock);
 
     let class_hash_mock = 999;
