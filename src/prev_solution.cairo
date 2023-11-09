@@ -1,11 +1,5 @@
 use starknet::account::Call;
 
-mod SUPPORTED_TX_VERSION {
-    const DEPLOY_ACCOUNT: felt252 = 1;
-    const DECLARE: felt252 = 2;
-    const INVOKE: felt252 = 1;
-}
-
 #[starknet::interface]
 trait IAccount<T> {
     fn public_key(self: @T) -> felt252;
@@ -19,14 +13,11 @@ trait IAccount<T> {
 
 #[starknet::contract]
 mod Account {
-    use super::{Call, IAccount, SUPPORTED_TX_VERSION};
+    use super::{Call, IAccount};
     use starknet::{get_caller_address, call_contract_syscall, get_tx_info, VALIDATED};
     use zeroable::Zeroable;
-    use array::{ArrayTrait, SpanTrait};
     use ecdsa::check_ecdsa_signature;
-    use box::BoxTrait;
 
-    const SIMULATE_TX_VERSION_OFFSET: felt252 = 340282366920938463463374607431768211456; // 2**128
     const SRC6_TRAIT_ID: felt252 = 1270010605630597976495846281167968799381097569185364931397797212080166453709; // hash of SNIP-6 trait
 
     #[storage]
@@ -41,41 +32,37 @@ mod Account {
 
     #[external(v0)]
     impl AccountImpl of IAccount<ContractState> {
-        fn is_valid_signature(self: @ContractState, hash: felt252, signature: Array<felt252>) -> felt252 {
-            let is_valid = self.is_valid_signature_bool(hash, signature.span());
-            if is_valid { VALIDATED } else { 0 }
+        fn public_key(self: @ContractState) -> felt252 {
+            self.public_key.read()
         }
 
         fn supports_interface(self: @ContractState, interface_id: felt252) -> bool {
             interface_id == SRC6_TRAIT_ID
         }
 
-        fn public_key(self: @ContractState) -> felt252 {
-            self.public_key.read()
+        fn is_valid_signature(self: @ContractState, hash: felt252, signature: Array<felt252>) -> felt252 {
+            let is_valid = self.is_valid_signature_bool(hash, signature.span());
+            if is_valid { VALIDATED } else { 0 }
         }
 
         fn __execute__(self: @ContractState, calls: Array<Call>) -> Array<Span<felt252>> {
             assert(!calls.is_empty(), 'Account: No call data given');
             self.only_protocol();
-            self.only_supported_tx_version(SUPPORTED_TX_VERSION::INVOKE);
             self.execute_multiple_calls(calls)
         }
         
         fn __validate__(self: @ContractState, calls: Array<Call>) -> felt252 {
             self.only_protocol();
-            self.only_supported_tx_version(SUPPORTED_TX_VERSION::INVOKE);
             self.validate_transaction()
         }
 
         fn __validate_declare__(self: @ContractState, class_hash: felt252) -> felt252 {
             self.only_protocol();
-            self.only_supported_tx_version(SUPPORTED_TX_VERSION::DECLARE);
             self.validate_transaction()
         }
 
         fn __validate_deploy__(self: @ContractState, class_hash: felt252, salt: felt252, public_key: felt252) -> felt252 {
             self.only_protocol();
-            self.only_supported_tx_version(SUPPORTED_TX_VERSION::DEPLOY_ACCOUNT);
             self.validate_transaction()
         }
     }
@@ -89,11 +76,9 @@ mod Account {
 
         fn is_valid_signature_bool(self: @ContractState, hash: felt252, signature: Span<felt252>) -> bool {
             let is_valid_length = signature.len() == 2_u32;
-
             if !is_valid_length {
                 return false;
             }
-            
             check_ecdsa_signature(
                 hash, self.public_key.read(), *signature.at(0_u32), *signature.at(1_u32)
             )
@@ -128,16 +113,6 @@ mod Account {
                 };
             };
             res
-        }
-
-        fn only_supported_tx_version(self: @ContractState, supported_tx_version: felt252) {
-            let tx_info = get_tx_info().unbox();
-            let version = tx_info.version;
-            assert(
-                version == supported_tx_version ||
-                version == SIMULATE_TX_VERSION_OFFSET + supported_tx_version,
-                'Account: Unsupported tx version'
-            );
-        }
-  }
+        }    
+    }
 }
