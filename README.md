@@ -9,8 +9,28 @@ After completing each step, run the associated script to verify it has been impl
 1. Install Scarb 2.3.1 with `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf))
 1. Install Starknet Foundry ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html))
 1. Clone this repository
+1. Create a new file called `account.cairo` inside the `src` folder.
+1. Copy the following code into the file.
+
+```cairo
+#[starknet::contract]
+mod Account {
+    #[storage]
+    struct Storage {}
+}
+```
+
+6. Run `scarb build` to verify the project is setup correctly
+
+> **Note:** You'll be working on the `account.cairo` file to complete the requirements of each step. The file `prev_solution.cairo` will show up in future steps as a way to catch up with the workshop if you fall behind. **Don't modify that file**.
 
 ## Step 1
+
+Checkout the `step1` branch to enable the verification tests for this section.
+
+```
+$ git checkout -b step1 origin/step1
+```
 
 ### Goal
 
@@ -18,22 +38,25 @@ Collect the `public_key` associated with a signer that is passed to the `constru
 
 ### Verification
 
-When completed, run the script below to verify your implementation.
+When completed, execute the test suite to verify you've met all the requirements for this section.
 
 ```
-$ scarb run verify_step1
+$ scarb test
 ```
 
 ### Hints
+
 * A `public_key` is defined with a single felt
 
 ## Step 2
 
-If you fell behind, catch up to this step by running the command below.
+Checkout the `step2` branch to enable the verification tests for this section.
 
 ```
-$ git stash && git checkout -b step2 origin/step2
+$ git checkout -b step2 origin/step2
 ```
+
+If you fell behind, the file `prev_solution.cairo` contains the solution to the previous step.
 
 ### Goal
 
@@ -46,10 +69,10 @@ Implement the function `is_valid_signature` as defined by the [SNIP-6](https://g
 
 ### Verification
 
-When completed, run the script below to verify your implementation.
+When completed, execute the test suite to verify you've met all the requirements for this section.
 
 ```
-$ scarb run verify_step2
+$ scarb test
 ```
 
 ### Hints
@@ -61,11 +84,13 @@ $ scarb run verify_step2
 
 ## Step 3
 
-If you fell behind, catch up to this step by running the command below.
+Checkout the `step3` branch to enable the verification tests for this section.
 
 ```
-$ git stash && git checkout -b step3 origin/step3
+$ git checkout -b step3 origin/step3
 ```
+
+If you fell behind, the file `prev_solution.cairo` contains the solution to the previous step.
 
 ### Goal
 
@@ -78,10 +103,10 @@ Implement the function `__validate__` as defined by the [SNIP-6](https://github.
 
 ### Verification
 
-When completed, run the script below to verify your implementation.
+When completed, execute the test suite to verify you've met all the requirements for this section.
 
 ```
-$ scarb run verify_step3
+$ scarb test
 ```
 
 ### Hints
@@ -92,11 +117,13 @@ $ scarb run verify_step3
 
 ## Step 4
 
-If you fell behind, catch up to this step by running the command below.
+Checkout the `step4` branch to enable the verification tests for this section.
 
 ```
-$ git stash && git checkout -b step4 origin/step4
+$ git checkout -b step4 origin/step4
 ```
+
+If you fell behind, the file `prev_solution.cairo` contains the solution to the previous step.
 
 ### Goal
 
@@ -108,10 +135,10 @@ Protect the `__validate__` function by making it callable only by the protocol w
 
 ### Verification
 
-When completed, run the script below to verify your implementation.
+When completed, execute the test suite to verify you've met all the requirements for this section.
 
 ```
-$ scarb run verify_step4
+$ scarb test
 ```
 
 ### Hints
@@ -120,11 +147,13 @@ $ scarb run verify_step4
 
 ## Step 5
 
-If you fell behind, catch up to this step by running the command below.
+Checkout the `step5` branch to enable the verification tests for this section.
 
 ```
-$ git stash && git checkout -b step5 origin/step5
+$ git checkout -b step5 origin/step5
 ```
+
+If you fell behind, the file `prev_solution.cairo` contains the solution to the previous step.
 
 ### Goal
 
@@ -151,10 +180,10 @@ fn __validate_deploy__(
 
 ### Verification
 
-When completed, run the script below to verify your implementation.
+When completed, execute the test suite to verify you've met all the requirements for this section.
 
 ```
-$ scarb run verify_step5
+$ scarb test
 ```
 
 ### Hints
@@ -165,11 +194,13 @@ $ scarb run verify_step5
 
 ## Step 6
 
-If you fell behind, catch up to this step by running the command below.
+Checkout the `step6` branch to enable the verification tests for this section.
 
 ```
-$ git stash && git checkout -b step6 origin/step6
+$ git checkout -b step6 origin/step6
 ```
+
+If you fell behind, the file `prev_solution.cairo` contains the solution to the previous step.
 
 ### Goal
 
@@ -184,7 +215,11 @@ Implement the function `__execute__` as defined by the [SNIP-6](https://github.c
 
 ### Verification
 
-Starknet Foundry has a [bug](https://github.com/foundry-rs/starknet-foundry/issues/1079) that prevents creating a test for this step. Once the bug is fixed, this workshop will be updated with a verification test.
+When completed, execute the test suite to verify you've met all the requirements for this section.
+
+```
+$ scarb test
+```
 
 ### Hints
 
@@ -193,11 +228,13 @@ Starknet Foundry has a [bug](https://github.com/foundry-rs/starknet-foundry/issu
 
 ## Step 7
 
-If you fell behind, catch up to this step by running the command below.
+Checkout the `step7` branch to enable the verification tests for this section.
 
 ```
-$ git stash && git checkout -b step7 origin/step7
+$ git checkout -b step7 origin/step7
 ```
+
+If you fell behind, the file `prev_solution.cairo` contains the solution to the previous step.
 
 ### Goal
 
@@ -210,10 +247,10 @@ Implement the function `supports_interface` from the [SNIP-5](https://github.com
 
 ### Verification
 
-When completed, run the script below to verify your implementation.
+When completed, execute the test suite to verify you've met all the requirements for this section.
 
 ```
-$ scarb run verify_step7
+$ scarb test
 ```
 
 ### Hints
@@ -222,11 +259,13 @@ $ scarb run verify_step7
 
 ## Step 8
 
-If you fell behind, catch up to this step by running the command below.
+Checkout the `step8` branch to enable the verification tests for this section.
 
 ```
-$ git stash && git checkout -b step8 origin/step8
+$ git checkout -b step8 origin/step8
 ```
+
+If you fell behind, the file `prev_solution.cairo` contains the solution to the previous step.
 
 ### Goal
 
@@ -239,10 +278,10 @@ Limit execution of the functions `__execute__`, `__validate__`, `__validate_decl
 
 ### Verification
 
-When completed, run the script below to verify your implementation.
+When completed, execute the test suite to verify you've met all the requirements for this section.
 
 ```
-$ scarb run verify_step8
+$ scarb test
 ```
 
 ### Hints
@@ -251,11 +290,13 @@ $ scarb run verify_step8
 
 ## Step 9 (Final)
 
-If you fell behind, catch up to this step by running the command below.
+Checkout the `step9` branch to enable the verification tests for this section.
 
 ```
-$ git stash && git checkout -b step9 origin/step9
+$ git checkout -b step9 origin/step9
 ```
+
+If you fell behind, the file `prev_solution.cairo` contains the solution to the previous step.
 
 ### Goal
 
