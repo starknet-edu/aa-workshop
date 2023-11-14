@@ -96,7 +96,7 @@ export async function deployAccount({ privateKey, publicKey, classHash, provider
         0
     );
 
-    console.log(`Send ETH to address ${chalk.blue(chalk.bold(myAccountAddress))}`);
+    console.log(`Send ETH to contract address ${chalk.bold(myAccountAddress)}`);
     const message = 'Press [Enter] when ready...';
     await waitForEnter(message);
 
@@ -132,4 +132,13 @@ export async function transferEth({ provider, account }: TransferEthConfig) {
     const amountInGwei = cairo.uint256(100);
 
     await contract.transfer(recipient, amountInGwei);
+}
+
+export async function isContractAlreadyDeclared(classHash: string, provider: RpcProvider) {
+    try {
+        await provider.getClassByHash(classHash);
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
