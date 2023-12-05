@@ -1,6 +1,6 @@
 use core::array::ArrayTrait;
 use starknet::{ ContractAddress, account::Call };
-use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait };
+use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
 use snforge_std::{
     start_prank,
     stop_prank,
@@ -8,6 +8,7 @@ use snforge_std::{
     stop_mock_call,
     start_spoof,
     stop_spoof,
+    CheatTarget,
 };
 use snforge_std::{ TxInfoMock, TxInfoMockTrait };
 use super::utils::{ deploy_contract, create_tx_info_mock };
@@ -30,15 +31,15 @@ fn handles_a_single_call() {
     let ret_data_mock = 421;
 
     let mut tx_info_mock = TxInfoMockTrait::default();
-    tx_info_mock.version = Option::Some(1);
+    tx_info_mock.version = Option::Some(SUPPORTED_TX_VERSION::INVOKE);
     
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     start_mock_call(call_address, call_function, ret_data_mock);
     let result = dispatcher.__execute__(array![call]);
     stop_mock_call(call_address, call_function);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 
     let unwrapped_result = *(*result.at(0)).at(0);
 
@@ -71,17 +72,17 @@ fn handles_multiple_calls() {
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
     let mut tx_info_mock = TxInfoMockTrait::default();
-    tx_info_mock.version = Option::Some(1);
+    tx_info_mock.version = Option::Some(SUPPORTED_TX_VERSION::INVOKE);
     
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     start_mock_call(call_address_1, call_function_1, ret_data_mock_1);
     start_mock_call(call_address_2, call_function_2, ret_data_mock_2);
     let result = dispatcher.__execute__(array![call_1, call_2]);
     stop_mock_call(call_address_2, call_function_2);
     stop_mock_call(call_address_1, call_function_1);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 
     let expected_result = array![array![ret_data_mock_1].span(), array![ret_data_mock_2].span()];
     assert(result == expected_result, 'Wrong returned values');
