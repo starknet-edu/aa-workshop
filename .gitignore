@@ -2,3 +2,4 @@ target
 .env
 node_modules
 src/account.cairo
+scripts/multi-branch-commit.sh
