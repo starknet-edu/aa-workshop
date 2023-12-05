@@ -1,7 +1,7 @@
 use starknet::{ ContractAddress, account::Call };
 use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
 use snforge_std::signature::StarkCurveKeyPairTrait;
-use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof };
+use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof, CheatTarget };
 use super::utils::{ deploy_contract, create_tx_info_mock };
 
 const SIMULATE_TX_VERSION_OFFSET: felt252 = 340282366920938463463374607431768211456; // 2**128
@@ -19,11 +19,11 @@ fn supported_real_declare_tx() {
     let class_hash_mock = 999;
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate_declare__(class_hash_mock);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
 
 #[test]
@@ -39,11 +39,11 @@ fn supported_simulated_declare_tx() {
     let class_hash_mock = 999;
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate_declare__(class_hash_mock);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
 
 #[test]
@@ -60,11 +60,11 @@ fn unsupported_declare_tx() {
     let class_hash_mock = 999;
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate_declare__(class_hash_mock);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
 
 #[test]
@@ -81,11 +81,11 @@ fn supported_real_declare_deploy_tx() {
     let salt_mock = 1;
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate_deploy__(class_hash_mock, salt_mock, signer.public_key);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
 
 #[test]
@@ -102,11 +102,11 @@ fn supported_simulated_declare_deploy_tx() {
     let salt_mock = 1;
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate_deploy__(class_hash_mock, salt_mock, signer.public_key);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
 
 #[test]
@@ -124,32 +124,9 @@ fn unsupported_declare_deploy_tx() {
     let salt_mock = 1;
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate_deploy__(class_hash_mock, salt_mock, signer.public_key);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
-
-
-
-
-
-
-
-
-
-// #[test]
-// fn supported_real_invoke_tx() {
-//     // Can't be tested due to SN Foundry bug
-// }
-
-// #[test]
-// fn supported_simulated_invoke_tx() {
-//     // Can't be tested due to SN Foundry bug
-// }
-
-// #[test]
-// fn unsupported_invoke_tx() {
-//     // Can't be tested due to SN Foundry bug   
-// }
