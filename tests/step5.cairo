@@ -1,7 +1,7 @@
 use starknet::{ ContractAddress, account::Call };
 use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
 use snforge_std::signature::StarkCurveKeyPairTrait;
-use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof };
+use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof, CheatTarget };
 use super::utils::{ deploy_contract, create_tx_info_mock };
 
 #[test]
@@ -17,11 +17,11 @@ fn validate_declare_by_protocol_succeeds() {
     let class_hash_mock = 999;
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate_declare__(class_hash_mock);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
 
 #[test]
@@ -38,11 +38,11 @@ fn validate_declare_by_non_protocol_fails() {
     let class_hash_mock = 999;
     let random_address: ContractAddress = 321.try_into().unwrap();
 
-    start_prank(contract_address, random_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), random_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate_declare__(class_hash_mock);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
 
 #[test]
@@ -59,11 +59,11 @@ fn validate_deploy_by_protocol_succeeds() {
     let salt_mock = 1;
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate_deploy__(class_hash_mock, salt_mock, signer.public_key);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
 
 #[test]
@@ -81,10 +81,10 @@ fn validate_deploy_by_non_protocol_fails() {
     let salt_mock = 1;
     let random_address: ContractAddress = 321.try_into().unwrap();
 
-    start_prank(contract_address, random_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), random_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate_deploy__(class_hash_mock, salt_mock, signer.public_key);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
 
