@@ -1,7 +1,7 @@
 use starknet::{ ContractAddress, account::Call };
 use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait };
 use snforge_std::signature::StarkCurveKeyPairTrait;
-use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof };
+use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof, CheatTarget };
 use super::utils::{ deploy_contract, create_call_array_mock, create_tx_info_mock };
 
 #[test]
@@ -17,11 +17,11 @@ fn protocol_invoke_succeeds() {
     let call_array_mock = create_call_array_mock();
     let zero_address: ContractAddress = 0.try_into().unwrap();
 
-    start_prank(contract_address, zero_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), zero_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate__(call_array_mock);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
 
 #[test]
@@ -38,9 +38,9 @@ fn non_protocol_invoke_fails() {
     let call_array_mock = create_call_array_mock();
     let random_address: ContractAddress = 321.try_into().unwrap();
 
-    start_prank(contract_address, random_address);
-    start_spoof(contract_address, tx_info_mock);
+    start_prank(CheatTarget::One(contract_address), random_address);
+    start_spoof(CheatTarget::One(contract_address), tx_info_mock);
     dispatcher.__validate__(call_array_mock);
-    stop_spoof(contract_address);
-    stop_prank(contract_address);
+    stop_spoof(CheatTarget::One(contract_address));
+    stop_prank(CheatTarget::One(contract_address));
 }
