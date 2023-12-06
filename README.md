@@ -6,13 +6,11 @@ After completing each step, run the associated script to verify it has been impl
 
 ## Setup
 
-1. Install Scarb 2.3.1 with `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf))
-1. Install Starknet Foundry ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html))
 1. Clone this repository
-1. Create a new file called `account.cairo` inside the `src` folder.
-1. Copy the following code into the file.
+1. Create a new file called `account.cairo` inside the `src` folder
+1. Copy the following code into the file
 
-```cairo
+```rust
 #[starknet::contract]
 mod Account {
     #[storage]
@@ -20,9 +18,32 @@ mod Account {
 }
 ```
 
-6. Run `scarb build` to verify the project is setup correctly
-
 > **Note:** You'll be working on the `account.cairo` file to complete the requirements of each step. The file `prev_solution.cairo` will show up in future steps as a way to catch up with the workshop if you fall behind. **Don't modify that file**.
+
+The next setup steps will depend on wether you prefer using Docker to manage global dependencies or not.
+
+### Option 1: Without Docker
+
+4. Install Scarb 2.3.1 ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf))
+1. Install Starknet Foundry 0.12.0 ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html))
+1. Install Nodejs 20 or higher ([instructions](https://nodejs.org/en/))
+1. Install the Cairo 1.0 extension for VSCode ([marketplace](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1))
+1. Run the tests to verify the project is setup correctly
+```
+$ scarb test
+```
+
+### Option 2: With Docker
+
+4. Make sure Docker is installed and running
+4. Install the Dev Containers extension for VSCode ([marketplace](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers))
+4. Launch an instance of VSCode inside of the container by going to **View -> Command Palette -> Dev Containers: Rebuild and Reopen in Container**
+4. Open VSCode's integrated terminal and run the tests to verify the project is setup correctly
+```
+$ scarb test
+```
+
+> **Note:** All the commands shown from this point on will assume that you are using the integrated terminal of a VSCode instance running inside the container. If you want to run the tests on a different terminal you'll need to use the command `docker compose run test`.
 
 ## Step 1
 
@@ -159,7 +180,7 @@ If you fell behind, the file `prev_solution.cairo` contains the solution to the 
 
 Implement the functions `__validate_declare__` and `__validate_deploy__` with the exact same logic as `__validate__` and make them publicly accessible. The signature of both functions is shown below.
 
-```cairo
+```rust
 fn __validate_declare__(
     self: @ContractState,
     class_hash: felt252
@@ -318,12 +339,11 @@ The following bonus steps will show you how to configure and use the `deploy.ts`
 
 ## Dependencies
 
-Install the dependencies required to run the deployer script.
+Run the command below from the project's root folder to install the deployment script dependencies.
 
-### Steps
-
-1. Install [Nodejs](https://nodejs.org/en/) 20 or higher on your computer. You can use [`asdf`](https://asdf-vm.com/) for that too.
-1. Once you have Nodejs, install the script dependencies by running `npm install` from the project's root folder.
+```
+$ npm install
+```
 
 ## Deployer Wallet
 
