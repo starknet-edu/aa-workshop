@@ -4,6 +4,8 @@ In this workshop you will learn how to create an account contract with a single 
 
 After completing each step, run the associated script to verify it has been implemented correctly.
 
+Use the [Cairo book](https://book.cairo-lang.org/ch00-00-introduction.html) and the [Starknet docs](https://docs.starknet.io/documentation/) as a reference.
+
 ## Setup
 
 1. Clone this repository
