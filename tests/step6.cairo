@@ -1,6 +1,6 @@
 use core::array::ArrayTrait;
 use starknet::{ ContractAddress, account::Call };
-use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
+use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait };
 use snforge_std::{
     start_prank,
     stop_prank,
@@ -11,7 +11,7 @@ use snforge_std::{
     CheatTarget,
 };
 use snforge_std::{ TxInfoMock, TxInfoMockTrait };
-use super::utils::{ deploy_contract, create_tx_info_mock };
+use super::utils::{ deploy_contract, create_tx_info_mock, SUPPORTED_TX_VERSION };
 
 #[test]
 fn handles_a_single_call() {
