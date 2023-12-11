@@ -37,7 +37,7 @@ mod Account {
         self.public_key.write(public_key);
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl AccountImpl of IAccount<ContractState> {
         fn is_valid_signature(self: @ContractState, hash: felt252, signature: Array<felt252>) -> felt252 {
             let is_valid = self.is_valid_signature_bool(hash, signature.span());
