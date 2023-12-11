@@ -26,7 +26,7 @@ mod Account {
         self.public_key.write(public_key);
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl AccountImpl of IAccount<ContractState> {
         fn public_key(self: @ContractState) -> felt252 {
             self.public_key.read()
