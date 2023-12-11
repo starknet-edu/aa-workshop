@@ -1,8 +1,8 @@
 use starknet::{ ContractAddress, account::Call };
-use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
+use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait };
 use snforge_std::signature::StarkCurveKeyPairTrait;
 use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof, CheatTarget };
-use super::utils::{ deploy_contract, create_tx_info_mock };
+use super::utils::{ deploy_contract, create_tx_info_mock, SUPPORTED_TX_VERSION };
 
 #[test]
 fn validate_declare_by_protocol_succeeds() {

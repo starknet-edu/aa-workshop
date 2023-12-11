@@ -32,3 +32,9 @@ fn create_tx_info_mock(tx_hash: felt252, ref signer: StarkCurveKeyPair, tx_versi
 
     return tx_info;
 }
+
+mod SUPPORTED_TX_VERSION {
+    const DEPLOY_ACCOUNT: felt252 = 1;
+    const DECLARE: felt252 = 2;
+    const INVOKE: felt252 = 1;
+}
