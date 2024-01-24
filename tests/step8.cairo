@@ -1,16 +1,19 @@
-use starknet::{ ContractAddress, account::Call };
-use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
-use snforge_std::signature::StarkCurveKeyPairTrait;
-use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof, CheatTarget };
-use super::utils::{ deploy_contract, create_tx_info_mock };
+use starknet::{ContractAddress, account::Call};
+use aa::account::{IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION};
+use snforge_std::signature::KeyPairTrait;
+use snforge_std::signature::stark_curve::{
+    StarkCurveKeyPairImpl, StarkCurveSignerImpl, StarkCurveVerifierImpl
+};
+use snforge_std::{start_prank, stop_prank, start_spoof, stop_spoof, CheatTarget};
+use super::utils::{deploy_contract, create_tx_info_mock};
 
 const SIMULATE_TX_VERSION_OFFSET: felt252 = 340282366920938463463374607431768211456; // 2**128
 
 #[test]
 fn supported_real_declare_tx() {
-    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
+    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
     let contract_address = deploy_contract(signer.public_key);
-    let dispatcher = IAccountDispatcher{ contract_address };
+    let dispatcher = IAccountDispatcher { contract_address };
 
     let tx_hash_mock = 123;
     let tx_version_mock = SUPPORTED_TX_VERSION::DECLARE;
@@ -28,9 +31,9 @@ fn supported_real_declare_tx() {
 
 #[test]
 fn supported_simulated_declare_tx() {
-    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
+    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
     let contract_address = deploy_contract(signer.public_key);
-    let dispatcher = IAccountDispatcher{ contract_address };
+    let dispatcher = IAccountDispatcher { contract_address };
 
     let tx_hash_mock = 123;
     let tx_version_mock = SUPPORTED_TX_VERSION::DECLARE + SIMULATE_TX_VERSION_OFFSET;
@@ -49,9 +52,9 @@ fn supported_simulated_declare_tx() {
 #[test]
 #[should_panic]
 fn unsupported_declare_tx() {
-    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
+    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
     let contract_address = deploy_contract(signer.public_key);
-    let dispatcher = IAccountDispatcher{ contract_address };
+    let dispatcher = IAccountDispatcher { contract_address };
 
     let tx_hash_mock = 123;
     let tx_version_mock = 1;
@@ -69,9 +72,9 @@ fn unsupported_declare_tx() {
 
 #[test]
 fn supported_real_declare_deploy_tx() {
-    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
+    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
     let contract_address = deploy_contract(signer.public_key);
-    let dispatcher = IAccountDispatcher{ contract_address };
+    let dispatcher = IAccountDispatcher { contract_address };
 
     let tx_hash_mock = 123;
     let tx_version_mock = SUPPORTED_TX_VERSION::DEPLOY_ACCOUNT;
@@ -90,9 +93,9 @@ fn supported_real_declare_deploy_tx() {
 
 #[test]
 fn supported_simulated_declare_deploy_tx() {
-    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
+    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
     let contract_address = deploy_contract(signer.public_key);
-    let dispatcher = IAccountDispatcher{ contract_address };
+    let dispatcher = IAccountDispatcher { contract_address };
 
     let tx_hash_mock = 123;
     let tx_version_mock = SUPPORTED_TX_VERSION::DEPLOY_ACCOUNT + SIMULATE_TX_VERSION_OFFSET;
@@ -112,9 +115,9 @@ fn supported_simulated_declare_deploy_tx() {
 #[test]
 #[should_panic]
 fn unsupported_declare_deploy_tx() {
-    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
+    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
     let contract_address = deploy_contract(signer.public_key);
-    let dispatcher = IAccountDispatcher{ contract_address };
+    let dispatcher = IAccountDispatcher { contract_address };
 
     let tx_hash_mock = 123;
     let tx_version_mock = 0;
