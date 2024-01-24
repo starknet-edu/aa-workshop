@@ -1,14 +1,12 @@
 use starknet::{ ContractAddress, account::Call };
 use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION };
-// use snforge_std::signature::StarkCurveKeyPairTrait;
-use snforge_std::signature::KeyPairTrait;
-use snforge_std::signature::stark_curve::{StarkCurveKeyPairImpl, StarkCurveSignerImpl, StarkCurveVerifierImpl};
+use snforge_std::signature::StarkCurveKeyPairTrait;
 use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof, CheatTarget };
 use super::utils::{ deploy_contract, create_call_array_mock, create_tx_info_mock };
 
 #[test]
 fn protocol_invoke_succeeds() {
-    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
+    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
     let contract_address = deploy_contract(signer.public_key);
     let dispatcher = IAccountDispatcher{ contract_address };
 
@@ -29,7 +27,7 @@ fn protocol_invoke_succeeds() {
 #[test]
 #[should_panic]
 fn non_protocol_invoke_fails() {
-    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
+    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
     let contract_address = deploy_contract(signer.public_key);
     let dispatcher = IAccountDispatcher{ contract_address };
 

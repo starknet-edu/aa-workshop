@@ -3,11 +3,8 @@ use snforge_std::{
     declare,
     cheatcodes::contract_class::ContractClassTrait
 };
-// use snforge_std::signature::{ interface::Signer, StarkCurveKeyPair };
+use snforge_std::signature::{ interface::Signer, StarkCurveKeyPair };
 use snforge_std::{ TxInfoMock, TxInfoMockTrait };
-use snforge_std::signature::{KeyPairTrait, KeyPair};
-use snforge_std::signature::stark_curve::{StarkCurveKeyPairImpl, StarkCurveSignerImpl, StarkCurveVerifierImpl};
-
 
 fn deploy_contract(public_key: felt252) -> ContractAddress {
     let contract = declare('Account');
@@ -24,8 +21,8 @@ fn create_call_array_mock() -> Array<Call> {
     return array![call];
 }
 
-fn create_tx_info_mock(tx_hash: felt252, ref signer: KeyPair<felt252, felt252>, tx_version: felt252) -> TxInfoMock {
-    let (r, s): (felt252, felt252) = signer.sign(tx_hash);
+fn create_tx_info_mock(tx_hash: felt252, ref signer: StarkCurveKeyPair, tx_version: felt252) -> TxInfoMock {
+    let (r, s) = signer.sign(tx_hash).unwrap();
     let tx_signature = array![r, s];
 
     let mut tx_info = TxInfoMockTrait::default();
