@@ -28,11 +28,11 @@ ENV PATH $PATH:$HOME/.asdf/bin:$HOME/.asdf/shims
 
 # Install scarb with asdf
 RUN asdf plugin add scarb
-RUN asdf install scarb 2.3.1
+RUN asdf install scarb 2.4.4
 
 # Install starknet foundry with asdf
 RUN asdf plugin add starknet-foundry
-RUN asdf install starknet-foundry 0.12.0
+RUN asdf install starknet-foundry 0.14.0
 
 # Install nodejs with asdf
 RUN asdf plugin add nodejs
