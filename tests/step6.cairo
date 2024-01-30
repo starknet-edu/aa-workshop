@@ -24,7 +24,7 @@ fn handles_a_single_call() {
     let call = Call {
         to: call_address,
         selector: selector!("my_function"),
-        calldata: array![],
+        calldata: array![].span(),
     };
 
     let zero_address: ContractAddress = 0.try_into().unwrap();
@@ -56,7 +56,7 @@ fn handles_multiple_calls() {
     let call_1 = Call {
         to: call_address_1,
         selector: selector!("my_function_1"),
-        calldata: array![],
+        calldata: array![].span(),
     };
     let ret_data_mock_1 = 111;
 
@@ -65,7 +65,7 @@ fn handles_multiple_calls() {
     let call_2 = Call {
         to: call_address_2,
         selector: selector!("my_function_2"),
-        calldata: array![],
+        calldata: array![].span(),
     };
     let ret_data_mock_2 = 222;
 
