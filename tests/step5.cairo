@@ -1,14 +1,17 @@
-use starknet::{ ContractAddress, account::Call };
-use aa::account::{ IAccountDispatcher, IAccountDispatcherTrait };
-use snforge_std::signature::StarkCurveKeyPairTrait;
-use snforge_std::{ start_prank, stop_prank, start_spoof, stop_spoof, CheatTarget };
-use super::utils::{ deploy_contract, create_tx_info_mock, SUPPORTED_TX_VERSION };
+use starknet::{ContractAddress, account::Call};
+use aa::account::{IAccountDispatcher, IAccountDispatcherTrait};
+use snforge_std::signature::KeyPairTrait;
+use snforge_std::signature::stark_curve::{
+    StarkCurveKeyPairImpl, StarkCurveSignerImpl, StarkCurveVerifierImpl
+};
+use snforge_std::{start_prank, stop_prank, start_spoof, stop_spoof, CheatTarget};
+use super::utils::{deploy_contract, create_tx_info_mock, SUPPORTED_TX_VERSION};
 
 #[test]
 fn validate_declare_by_protocol_succeeds() {
-    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
+    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
     let contract_address = deploy_contract(signer.public_key);
-    let dispatcher = IAccountDispatcher{ contract_address };
+    let dispatcher = IAccountDispatcher { contract_address };
 
     let tx_hash_mock = 123;
     let tx_version_mock = SUPPORTED_TX_VERSION::DECLARE;
@@ -27,9 +30,9 @@ fn validate_declare_by_protocol_succeeds() {
 #[test]
 #[should_panic]
 fn validate_declare_by_non_protocol_fails() {
-    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
+    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
     let contract_address = deploy_contract(signer.public_key);
-    let dispatcher = IAccountDispatcher{ contract_address };
+    let dispatcher = IAccountDispatcher { contract_address };
 
     let tx_hash_mock = 123;
     let tx_version_mock = SUPPORTED_TX_VERSION::DECLARE;
@@ -47,9 +50,9 @@ fn validate_declare_by_non_protocol_fails() {
 
 #[test]
 fn validate_deploy_by_protocol_succeeds() {
-    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
+    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
     let contract_address = deploy_contract(signer.public_key);
-    let dispatcher = IAccountDispatcher{ contract_address };
+    let dispatcher = IAccountDispatcher { contract_address };
 
     let tx_hash_mock = 123;
     let tx_version_mock = SUPPORTED_TX_VERSION::DEPLOY_ACCOUNT;
@@ -69,9 +72,9 @@ fn validate_deploy_by_protocol_succeeds() {
 #[test]
 #[should_panic]
 fn validate_deploy_by_non_protocol_fails() {
-    let mut signer = StarkCurveKeyPairTrait::from_private_key(123);
+    let mut signer = KeyPairTrait::<felt252, felt252>::from_secret_key(123);
     let contract_address = deploy_contract(signer.public_key);
-    let dispatcher = IAccountDispatcher{ contract_address };
+    let dispatcher = IAccountDispatcher { contract_address };
 
     let tx_hash_mock = 123;
     let tx_version_mock = SUPPORTED_TX_VERSION::DEPLOY_ACCOUNT;
