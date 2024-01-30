@@ -17,7 +17,7 @@ fn create_call_array_mock() -> Array<Call> {
     let call = Call {
         to: 111.try_into().unwrap(),
         selector: 'fake_endpoint',
-        calldata: array![],
+        calldata: array![].span(),
     };
     return array![call];
 }
