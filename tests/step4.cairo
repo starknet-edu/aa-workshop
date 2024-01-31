@@ -1,11 +1,11 @@
 use starknet::{ContractAddress, account::Call};
-use aa::account::{IAccountDispatcher, IAccountDispatcherTrait, SUPPORTED_TX_VERSION};
+use aa::account::{IAccountDispatcher, IAccountDispatcherTrait};
 use snforge_std::signature::KeyPairTrait;
 use snforge_std::signature::stark_curve::{
     StarkCurveKeyPairImpl, StarkCurveSignerImpl, StarkCurveVerifierImpl
 };
 use snforge_std::{start_prank, stop_prank, start_spoof, stop_spoof, CheatTarget};
-use super::utils::{deploy_contract, create_call_array_mock, create_tx_info_mock};
+use super::utils::{deploy_contract, create_call_array_mock, create_tx_info_mock, SUPPORTED_TX_VERSION};
 
 #[test]
 fn protocol_invoke_succeeds() {
