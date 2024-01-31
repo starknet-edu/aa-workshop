@@ -5,9 +5,10 @@ trait IAccount<T> {
     fn public_key(self: @T) -> felt252;
     fn is_valid_signature(self: @T, hash: felt252, signature: Array<felt252>) -> felt252;
     fn __validate__(self: @T, calls: Array<Call>) -> felt252;
+    fn __execute__(self: @T);
 }
 
-#[starknet::contract]
+#[starknet::contract(account)]
 mod Account {
     use super::{Call, IAccount};
     use starknet::{get_caller_address, get_tx_info, VALIDATED};
@@ -47,6 +48,8 @@ mod Account {
             assert(is_valid, 'Account: Incorrect tx signature');
             VALIDATED
         }
+
+        fn __execute__(self: @ContractState){}
     }
 
     #[generate_trait]
