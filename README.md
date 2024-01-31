@@ -10,13 +10,27 @@ Use the [Cairo book](https://book.cairo-lang.org/ch00-00-introduction.html) and 
 
 1. Clone this repository
 1. Create a new file called `account.cairo` inside the `src` folder
-1. Copy the following code into the file
+1. Copy the following starting code into the file
 
 ```rust
-#[starknet::contract]
+#[starknet::interface]
+trait IAccount<T> {
+    fn __execute__(self: @T);
+    fn __validate__(self: @T);
+}
+
+#[starknet::contract(account)]
 mod Account {
+    use super::IAccount;
+
     #[storage]
     struct Storage {}
+
+    #[abi(embed_v0)]
+    impl AccountImpl of IAccount<ContractState> {
+        fn __execute__(self: @ContractState){}
+        fn __validate__(self: @ContractState){}
+    }
 }
 ```
 
@@ -26,8 +40,8 @@ The next setup steps will depend on wether you prefer using Docker to manage glo
 
 ### Option 1: Without Docker
 
-4. Install Scarb 2.3.1 ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf))
-1. Install Starknet Foundry 0.12.0 ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html))
+4. Install Scarb 2.5.1 ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf))
+1. Install Starknet Foundry 0.16.0 ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html))
 1. Install Nodejs 20 or higher ([instructions](https://nodejs.org/en/))
 1. Install the Cairo 1.0 extension for VSCode ([marketplace](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1))
 1. Run the tests to verify the project is setup correctly
