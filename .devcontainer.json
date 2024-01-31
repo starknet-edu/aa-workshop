@@ -1,14 +1,12 @@
 {
     "name": "dev",
-    "build": {
-      "dockerfile": "Dockerfile",
-      "context": "."
-    },
+    "image": "barretodavid/starknet-dev:2.5.1",
     "customizations": {
       "vscode": {
         "extensions": [
             "StarkWare.cairo1",
-			"esbenp.prettier-vscode"
+			      "esbenp.prettier-vscode",
+            "ms-azuretools.vscode-docker"
 		],
         "settings": {
             "terminal.integrated.defaultProfile.linux": "zsh"
