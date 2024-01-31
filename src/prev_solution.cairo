@@ -1,9 +1,11 @@
 #[starknet::interface]
 trait IAccount<T> {
     fn public_key(self: @T) -> felt252;
+    fn __execute__(self: @T);
+    fn __validate__(self: @T);
 }
 
-#[starknet::contract]
+#[starknet::contract(account)]
 mod Account {
     use super::IAccount;
 
@@ -22,5 +24,7 @@ mod Account {
         fn public_key(self: @ContractState) -> felt252 {
             self.public_key.read()
         }
+        fn __execute__(self: @ContractState){}
+        fn __validate__(self: @ContractState){}
     }
 }
