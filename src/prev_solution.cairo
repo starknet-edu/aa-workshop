@@ -11,7 +11,7 @@ trait IAccount<T> {
     fn __validate_deploy__(self: @T, class_hash: felt252, salt: felt252, public_key: felt252) -> felt252;
 }
 
-#[starknet::contract]
+#[starknet::contract(account)]
 mod Account {
     use super::{Call, IAccount};
     use starknet::{get_caller_address, call_contract_syscall, get_tx_info, VALIDATED};
@@ -96,7 +96,7 @@ mod Account {
 
         fn execute_single_call(self: @ContractState, call: Call) -> Span<felt252> {
             let Call{to, selector, calldata} = call;
-            call_contract_syscall(to, selector, calldata.span()).unwrap()
+            call_contract_syscall(to, selector, calldata).unwrap()
         }
 
         fn execute_multiple_calls(self: @ContractState, mut calls: Array<Call>) -> Array<Span<felt252>> {
