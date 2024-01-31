@@ -7,9 +7,10 @@ trait IAccount<T> {
     fn __validate__(self: @T, calls: Array<Call>) -> felt252;
     fn __validate_declare__(self: @T, class_hash: felt252) -> felt252;
     fn __validate_deploy__(self: @T, class_hash: felt252, salt: felt252, public_key: felt252) -> felt252;
+    fn __execute__(self: @T);
 }
 
-#[starknet::contract]
+#[starknet::contract(account)]
 mod Account {
     use super::{Call, IAccount};
     use starknet::{get_caller_address, get_tx_info, VALIDATED};
@@ -51,6 +52,8 @@ mod Account {
             self.only_protocol();
             self.validate_transaction()
         }
+
+        fn __execute__(self: @ContractState){}
     }
 
     #[generate_trait]
