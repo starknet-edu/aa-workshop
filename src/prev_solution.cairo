@@ -2,9 +2,11 @@
 trait IAccount<T> {
     fn public_key(self: @T) -> felt252;
     fn is_valid_signature(self: @T, hash: felt252, signature: Array<felt252>) -> felt252;
+    fn __execute__(self: @T);
+    fn __validate__(self: @T);
 }
 
-#[starknet::contract]
+#[starknet::contract(account)]
 mod Account {
     use super::IAccount;
     use starknet::VALIDATED;
@@ -36,5 +38,8 @@ mod Account {
             );
             if is_valid { VALIDATED } else { 0 }
         }
+
+        fn __execute__(self: @ContractState){}
+        fn __validate__(self: @ContractState){}
     }
 }
