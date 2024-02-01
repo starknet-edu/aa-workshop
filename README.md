@@ -330,7 +330,7 @@ If the test suite passes, congratulations, you have created your first custom St
 To deploy your account contract to testnet you have two options, to use [`starknet.js`](https://www.starknetjs.com/) or [`starknet.py`](https://starknetpy.readthedocs.io/en/latest/installation.html). Choose which step to go next based on your preference of using `Typescript` or `Python`.
 
 * [Step 9A (Typescript)](#step-9a-typescript)
-* [Step 9B (Python)](#step-9a-python)
+* [Step 9B (Python)](#step-9b-python)
 
 ## Step 9A (Typescript)
 
@@ -396,6 +396,6 @@ Run the script that will declare, deploy and use your account contract to send a
 
 If the script finishes successfully your account contract is ready to be used on Starknet testnet.
 
-## Step 9A (Python)
+## Step 9B (Python)
 
 WIP
