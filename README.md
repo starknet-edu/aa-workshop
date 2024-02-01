@@ -325,35 +325,28 @@ $ scarb test
 
 * Simulated transactions use the same version as their real counterpart but offset by `2^128`.
 
-## Step 9 (Final)
+If the test suite passes, congratulations, you have created your first custom Starknet account contract thanks to account abstraction!
 
-Checkout the `step9` branch to enable the verification tests for this section.
+To deploy your account contract to testnet you have two options, to use [`starknet.js`](https://www.starknetjs.com/) or [`starknet.py`](https://starknetpy.readthedocs.io/en/latest/installation.html). Choose which step to go next based on your preference of using `Typescript` or `Python`.
+
+* [Step 9A (Typescript)](#step-9a-typescript)
+* [Step 9B (Python)](#step-9a-python)
+
+## Step 9A (Typescript)
+
+Checkout the `step9-js` branch to get a deployment script based on [`starknet.js`](https://www.starknetjs.com/).
 
 ```
-$ git checkout -b step9 origin/step9
+$ git checkout -b step9-js origin/step9-js
 ```
 
 If you fell behind, the file `prev_solution.cairo` contains the solution to the previous step.
 
 ### Goal
 
-Check that you have correctly created an account contract for Starknet by running the full test suite:
+To deploy your account contract to Starknet's testnet using the `deploy.ts` script found in the `scripts` folder.
 
-```
-$ scarb test
-```
-
-If the test suite passes, congratulations, you have created your first custom Starknet account contract thanks to account abstraction.
-
-# Bonus: Deploying to Testnet
-
-You can deploy your account contract to Starknet testnet in two ways, using [Starkli](https://github.com/xJonathanLEI/starkli) (CLI) or using [Starknet.js](https://www.starknetjs.com/) (SDK).
-
-Using Starkli to deploy an account contract is a "manual" process but you can follow this [tutorial](https://medium.com/starknet-edu/account-abstraction-on-starknet-part-iii-698904e7792c) to learn how to do it. On the other hand, with an SDK like Starknet.js you can automate the process of declaring, deploying and testing an account contract.
-
-The following bonus steps will show you how to configure and use the `deploy.ts` script found in the `scripts` folder to deploy your account contract to Starknet testnet.
-
-## Dependencies
+### Dependencies
 
 Run the command below from the project's root folder to install the deployment script dependencies.
 
@@ -361,11 +354,11 @@ Run the command below from the project's root folder to install the deployment s
 $ npm install
 ```
 
-## Deployer Wallet
+### Deployer Wallet
 
 Create a wallet that the script can use to pay for the declaration of your account contract.
 
-### Steps
+#### Steps
 
 1. Create a wallet on Starknet **testnet** using the [Argent X](https://www.argent.xyz/argent-x/) or [Braavos](https://braavos.app/) browser extension.
 1. Fund the wallet by using the [Faucet](https://faucet.goerli.starknet.io/) or the [Bridge](https://goerli.starkgate.starknet.io/).
@@ -376,11 +369,11 @@ Create a wallet that the script can use to pay for the declaration of your accou
 DEPLOYER_PRIVATE_KEY=<YOUR_FUNDED_TESTNET_WALLET_PK>
 ```
 
-## RPC Endpoint
+### RPC Endpoint
 
 Provide an RPC URL that the script can use to interact with Starknet testnet.
 
-### Steps
+#### Steps
 
 1. Create an account on [Infura](https://www.infura.io/).
 1. Create a new API Key for a Web3.
@@ -392,13 +385,17 @@ DEPLOYER_PRIVATE_KEY=<YOUR_FUNDED_TESTNET_WALLET_PK>
 RPC_ENDPOINT=<YOUR_RPC_URL_FOR_STARKNET_TESTNET>
 ```
 
-## Run the Script
+### Run the Script
 
 Run the script that will declare, deploy and use your account contract to send a small amount of ETH to another wallet as a test.
 
-### Steps
+#### Steps
 
 1. From project's root folder run `npm run deploy`
 1. Follow the instructions from the terminal
 
 If the script finishes successfully your account contract is ready to be used on Starknet testnet.
+
+## Step 9A (Python)
+
+WIP
