@@ -39,5 +39,4 @@ WORKDIR /app
 COPY .tool-versions .
 RUN asdf install
 
-COPY package.json .
-RUN npm install
+RUN npm install -g npm@latest
