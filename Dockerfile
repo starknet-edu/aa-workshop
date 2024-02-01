@@ -1,7 +1,14 @@
 FROM ubuntu:latest
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt update && apt upgrade -y
 RUN apt install git curl zsh -y
+
+# Dependencies required to install python with asdf
+RUN apt install make build-essential libssl-dev zlib1g-dev \
+    libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev -y
 
 # Change default shell to zsh
 SHELL ["/bin/zsh", "-lc"]
@@ -33,6 +40,7 @@ ENV PATH $PATH:$HOME/.asdf/bin:$HOME/.asdf/shims
 RUN asdf plugin add scarb
 RUN asdf plugin add starknet-foundry
 RUN asdf plugin add nodejs
+RUN asdf plugin add python
 
 WORKDIR /app
 
