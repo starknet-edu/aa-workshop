@@ -19,11 +19,11 @@ fn handles_a_single_call() {
     let dispatcher = IAccountDispatcher{ contract_address };
 
     let call_address: ContractAddress = 'ramdom'.try_into().unwrap();
-    let call_function = 'my_function';
+    let my_function = selector!("my_function");
 
     let call = Call {
         to: call_address,
-        selector: selector!("my_function"),
+        selector: my_function,
         calldata: array![].span(),
     };
 
@@ -35,9 +35,9 @@ fn handles_a_single_call() {
     
     start_prank(CheatTarget::One(contract_address), zero_address);
     start_spoof(CheatTarget::One(contract_address), tx_info_mock);
-    start_mock_call(call_address, call_function, ret_data_mock);
+    start_mock_call(call_address, my_function, ret_data_mock);
     let result = dispatcher.__execute__(array![call]);
-    stop_mock_call(call_address, call_function);
+    stop_mock_call(call_address, my_function);
     stop_spoof(CheatTarget::One(contract_address));
     stop_prank(CheatTarget::One(contract_address));
 
@@ -52,19 +52,21 @@ fn handles_multiple_calls() {
     let dispatcher = IAccountDispatcher{ contract_address };
 
     let call_address_1: ContractAddress = 'ramdom_1'.try_into().unwrap();
-    let call_function_1 = 'my_function_1';
+    let call_function_1 = selector!("my_function_1");
+
     let call_1 = Call {
         to: call_address_1,
-        selector: selector!("my_function_1"),
+        selector: call_function_1,
         calldata: array![].span(),
     };
     let ret_data_mock_1 = 111;
 
     let call_address_2: ContractAddress = 'ramdom_2'.try_into().unwrap();
-    let call_function_2 = 'my_function_2';
+    let call_function_2 = selector!("my_function_2");
+
     let call_2 = Call {
         to: call_address_2,
-        selector: selector!("my_function_2"),
+        selector: call_function_2,
         calldata: array![].span(),
     };
     let ret_data_mock_2 = 222;
