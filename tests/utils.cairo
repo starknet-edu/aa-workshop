@@ -8,7 +8,7 @@ use snforge_std::signature::stark_curve::{
 
 
 fn deploy_contract(public_key: felt252) -> ContractAddress {
-    let contract = declare('Account');
+    let contract = declare("Account");
     let constructor_args = array![public_key];
     return contract.deploy(@constructor_args).unwrap();
 }

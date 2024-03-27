@@ -1,11 +1,11 @@
 [package]
 name = "aa"
 version = "0.1.0"
-cairo-version = "2.5.2"
+cairo-version = "2.6.3"
 
 [dependencies]
-starknet = "2.5.2"
-snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry.git", tag = "v0.16.0" }
+starknet = "2.6.3"
+snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry.git", tag = "v0.20.0" }
 
 [[target.starknet-contract]]
 sierra = true
